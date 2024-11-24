@@ -1,35 +1,101 @@
+/* Estilo base para todas las páginas */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Arial', sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     margin: 0;
-    background-color: #f0f0f0;
-}
-
-.container {
-    text-align: center;
-}
-
-h1 {
+    background-color: #f8f9fa;
     color: #333;
 }
 
-p {
-    margin-bottom: 20px;
+/* Contenedor principal */
+.container {
+    text-align: center;
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
 }
 
-.buttons .btn {
+/* Títulos */
+h1, h2 {
+    margin-bottom: 1.5rem;
+    color: #343a40;
+    font-weight: bold;
+}
+
+/* Párrafos */
+p {
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+    color: #555;
+}
+
+/* Botones */
+.buttons .btn, button {
     display: inline-block;
-    margin: 0 10px;
-    padding: 10px 20px;
+    padding: 0.75rem 1.5rem;
     background-color: #007bff;
     color: white;
     text-decoration: none;
-    border-radius: 5px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    transition: all 0.3s ease-in-out;
 }
 
-.buttons .btn:hover {
+.buttons .btn:hover, button:hover {
     background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+/* Campos de formulario */
+input[type="text"], input[type="email"], input[type="password"] {
+    width: 100%;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+/* Botón de formulario */
+button[type="submit"] {
+    width: 100%;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 0.75rem;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+button[type="submit"]:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+/* Ajustes para pantallas pequeñas */
+@media (max-width: 576px) {
+    .container {
+        padding: 1.5rem;
+    }
+
+    h1, h2 {
+        font-size: 1.5rem;
+    }
 }
