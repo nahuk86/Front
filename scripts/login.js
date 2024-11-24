@@ -13,9 +13,9 @@ document.getElementById('login-form').addEventListener('submit', async (event) =
 
         if (response.ok) {
             const data = await response.json();
-            localStorage.setItem('token', data.Token); // Almacena el token en localStorage
+            localStorage.setItem('token', data.Token); // Almacena el token
             alert('Autenticación exitosa.');
-            window.location.href = 'private.html'; // Redirige a la pantalla privada
+            window.location.href = 'panel.html'; // Redirige al panel
         } else {
             const errorData = await response.json();
             alert(errorData.message || 'Correo o contraseña incorrectos.');
