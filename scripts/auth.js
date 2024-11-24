@@ -1,27 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token'); // Obtiene el token del almacenamiento local
 
-    if (token) {
-        // Valida el token, pero no redirige automáticamente
-        fetch('https://mdw-back-ops20241124110904.azurewebsites.net/api/Account/validate-token', {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json',
-            },
-        })
-            .then((response) => {
-                if (response.ok) {
-                    // Si el token es válido, redirige al panel
-                    window.location.href = 'panel.html';
-                } else {
-                    console.log('Token inválido o expirado.');
-                    localStorage.removeItem('token'); // Limpia el token si no es válido
-                }
-            })
-            .catch((error) => {
-                console.error('Error al validar el token:', error);
-                localStorage.removeItem('token'); // Limpia el token en caso de error
-            });
+    // Si ya hay un token, NO redirigir automáticamente desde index.html
+    if (window.location.pathname.includes('index.html') && token) {
+        console.log('Usuario autenticado, pero no redirigiendo desde index.html.');
+        return;
+    }
+
+    // Si estás en otra página protegida y no tienes token, redirige al login
+    if (!token && (window.location.pathname.includes('panel.html') || window.location.pathname.includes('private.html'))) {
+        alert('No estás autenticado. Redirigiendo al inicio de sesión.');
+        window.location.href = 'login.html';
     }
 });
