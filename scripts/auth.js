@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const token = localStorage.getItem('token'); // Verifica si hay un token
+    const token = localStorage.getItem('token');
 
     if (token) {
         // Valida el token, pero no redirige automáticamente
@@ -13,12 +13,12 @@ document.addEventListener('DOMContentLoaded', () => {
             .then((response) => {
                 if (!response.ok) {
                     console.log('Token inválido o expirado.');
-                    localStorage.removeItem('token'); // Elimina el token si no es válido
+                    localStorage.removeItem('token'); // Limpia el token si no es válido
                 }
             })
             .catch((error) => {
                 console.error('Error al validar el token:', error);
-                localStorage.removeItem('token'); // Elimina el token en caso de error
+                localStorage.removeItem('token'); // Limpia el token en caso de error
             });
     }
 });
