@@ -21,8 +21,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             throw new Error('Token inválido o expirado');
         }
 
-        // Si la validación es exitosa, redirige al panel
-        window.location.href = 'panel.html';
+        // Si estás en `private.html`, redirige al panel
+        if (window.location.pathname.includes('private.html')) {
+            window.location.href = 'panel.html';
+        }
     } catch (error) {
         console.error('Error de autenticación:', error);
         alert('Tu sesión ha expirado. Por favor, inicia sesión nuevamente.');
