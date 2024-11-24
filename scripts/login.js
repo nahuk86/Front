@@ -28,7 +28,7 @@ document.getElementById('login-form').addEventListener('submit', async (event) =
             await logEvent(email, 'Inicio de sesión', 'Usuario autenticado exitosamente.');
 
             alert('Inicio de sesión exitoso.');
-            window.location.href = 'private.html'; // Redirige al usuario a la página privada
+            window.location.href = 'panel.html'; // Redirige al usuario a la página privada
         } else {
             // Registrar el intento fallido en la bitácora
             await logEvent(email, 'Fallo de autenticación', 'Credenciales inválidas.');
