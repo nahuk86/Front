@@ -6,7 +6,7 @@ document.getElementById('register-form').addEventListener('submit', async (event
     const password = document.getElementById('password').value;
 
     try {
-        const response = await fetch('https://localhost:32781/api/Account/register', {
+        const response = await fetch('https://mdw-back-ops20241124110904.azurewebsites.net/api/Account/register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name, email, password }),
