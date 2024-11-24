@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('token'); // Verifica si hay un token
 
     if (token) {
-        // Intenta validar el token antes de redirigir
+        // Valida el token con el backend
         fetch('https://mdw-back-ops20241124110904.azurewebsites.net/api/Account/validate-token', {
             method: 'GET',
             headers: {
@@ -12,12 +12,15 @@ document.addEventListener('DOMContentLoaded', () => {
         })
             .then((response) => {
                 if (response.ok) {
-                    // Si el token es válido, redirige al panel
-                    window.location.href = 'panel.html';
+                    console.log('Usuario autenticado'); // Para confirmar la autenticación
+                } else {
+                    console.log('Token inválido, limpiando token.');
+                    localStorage.removeItem('token'); // Elimina el token si es inválido
                 }
             })
             .catch((error) => {
                 console.error('Error al validar el token:', error);
+                localStorage.removeItem('token'); // Elimina el token si hay un error
             });
     }
 });
