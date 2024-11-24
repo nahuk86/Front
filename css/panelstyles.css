@@ -1,0 +1,132 @@
+/* Estilos generales */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    padding: 20px;
+}
+
+h1 {
+    font-size: 2.5rem;
+    font-weight: 300;
+    text-align: center;
+    margin-bottom: 40px;
+    color: #333;
+}
+
+.card {
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: none;
+}
+
+.card-header {
+    font-size: 1.2rem;
+    font-weight: 600;
+    background-color: #4A90E2;
+    color: #fff;
+    text-align: center;
+    border-radius: 15px 15px 0 0;
+}
+
+/* Botones */
+.btn {
+    font-weight: 600;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    padding: 12px;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+.btn-primary {
+    background-color: #4A90E2;
+    border: none;
+}
+
+.btn-success {
+    background-color: #50E3C2;
+    border: none;
+}
+
+.btn-info {
+    background-color: #B8E986;
+    border: none;
+}
+
+.btn-warning {
+    background-color: #F8E71C;
+    border: none;
+}
+
+.btn-danger {
+    background-color: #FF5C5C;
+    border: none;
+}
+
+/* Estilo del área de resultados */
+#result-area {
+    border-radius: 10px;
+    padding: 25px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+#scanner-status .badge {
+    font-size: 0.85rem;
+    padding: 0.5rem;
+    border-radius: 15px;
+}
+
+/* Media Queries para diseño responsivo */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2rem;
+    }
+
+    .card-header {
+        font-size: 1rem;
+    }
+
+    .btn {
+        font-size: 0.9rem;
+    }
+
+    #result-area {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 576px) {
+    h1 {
+        font-size: 1.75rem;
+    }
+
+    .card-header {
+        font-size: 0.9rem;
+    }
+
+    .btn {
+        font-size: 0.8rem;
+    }
+
+    #result-area {
+        padding: 15px;
+    }
+}
+
+.container-fluid {
+    max-width: 1100px;
+    margin: auto;
+}
+
+.card-body {
+    padding: 35px;
+}
+
+.text-muted {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
