@@ -1,10 +1,10 @@
 document.addEventListener('DOMContentLoaded', async () => {
     const token = localStorage.getItem('token'); // Verifica si hay un token almacenado
 
-    // Si no hay token, redirige al inicio con un mensaje
+    // Si no hay token, muestra mensaje de error y redirige al inicio
     if (!token) {
-        alert('Esta es una página privada. Por favor, inicia sesión primero.');
-        window.location.href = 'index.html'; // Redirige a la página principal
+        alert('Error: Página privada. Por favor, inicia sesión primero.');
+        window.location.href = 'index.html'; // Cambia a login.html si prefieres
         return;
     }
 
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     } catch (error) {
         console.error('Error de autenticación:', error);
         localStorage.removeItem('token'); // Limpia el token si es inválido
-        alert('Tu sesión ha expirado. Por favor, inicia sesión nuevamente.');
-        window.location.href = 'index.html'; // Redirige al inicio
+        alert('Error: Página privada. Por favor, inicia sesión primero.');
+        window.location.href = 'index.html'; // Cambia a login.html si prefieres
     }
 });
