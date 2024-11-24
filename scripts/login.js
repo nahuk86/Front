@@ -5,23 +5,23 @@ document.getElementById('login-form').addEventListener('submit', async (event) =
     const password = document.getElementById('password').value;
 
     try {
-        const response = await fetch('https://localhost:32769/api/Account/login', {
+        const response = await fetch('https://localhost:32781/api/Account/login', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password }),
         });
 
         if (response.ok) {
             const data = await response.json();
-            alert('Inicio de sesión exitoso!');
-            // Redirige al panel o almacena el token
-            console.log(data);
+            localStorage.setItem('token', data.Token); // Almacena el token en localStorage
+            alert('Autenticación exitosa.');
+            window.location.href = 'private.html'; // Redirige a la pantalla privada
         } else {
-            alert('Error al iniciar sesión. Por favor, verifica tus credenciales.');
+            const errorData = await response.json();
+            alert(errorData.message || 'Correo o contraseña incorrectos.');
         }
     } catch (error) {
         console.error('Error:', error);
+        alert('Error de red. Intenta nuevamente.');
     }
 });

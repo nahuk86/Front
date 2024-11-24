@@ -6,23 +6,21 @@ document.getElementById('register-form').addEventListener('submit', async (event
     const password = document.getElementById('password').value;
 
     try {
-        const response = await fetch('https://localhost:32769/api/Account/register', {
+        const response = await fetch('https://localhost:32781/api/Account/register', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name, email, password }),
         });
 
         if (response.ok) {
-            const data = await response.json();
-            alert(data.message); // Muestra el mensaje desde el servidor
+            alert('Registro exitoso. Por favor, inicia sesión.');
+            window.location.href = 'login.html'; // Redirige a la pantalla de login
         } else {
             const errorData = await response.json();
-            alert(errorData.message || 'Error al registrarse. Por favor, intenta nuevamente.');
+            alert(errorData.message || 'Error al registrarse.');
         }
     } catch (error) {
         console.error('Error:', error);
-        alert('Error de red. Por favor, verifica tu conexión.');
+        alert('Error de red. Intenta nuevamente.');
     }
 });
