@@ -3,11 +3,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (!token) {
         alert('No estás autenticado. Redirigiendo al inicio de sesión.');
-        window.location.href = 'login.html';
+        window.location.href = 'login.html'; // Redirige al login si no hay token
         return;
     }
 
     try {
+        // Valida el token
         const response = await fetch('https://mdw-back-ops20241124110904.azurewebsites.net/api/Account/validate-token', {
             method: 'GET',
             headers: {
