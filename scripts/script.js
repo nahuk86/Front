@@ -22,9 +22,35 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Botón Generar Reporte
-    document.getElementById('generate-report').addEventListener('click', function () {
-        // Simulación de la acción
-        updateResultArea('Generando reporte...');
+    document.getElementById('generate-report').addEventListener('click', async function () {
+        const token = localStorage.getItem('token');
+
+        if (!token) {
+            alert('No estás autenticado. Por favor, inicia sesión nuevamente.');
+            window.location.href = 'login.html';
+            return;
+        }
+
+        try {
+            const response = await fetch('https://mdw-back-ops20241124110904.azurewebsites.net/api/Bitacora/todos', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (response.ok) {
+                const logs = await response.json();
+                displayLogs(logs);
+            } else {
+                const errorData = await response.json();
+                alert(`Error al generar el reporte: ${errorData.message || 'Error desconocido.'}`);
+            }
+        } catch (error) {
+            console.error('Error al generar el reporte:', error);
+            alert('Ocurrió un error al intentar generar el reporte.');
+        }
     });
 
     // Botón Solicitar Envío de Notificaciones
@@ -33,13 +59,56 @@ document.addEventListener('DOMContentLoaded', function () {
         updateResultArea('Envío de notificaciones solicitado.');
     });
 
+    // Actualiza el área de resultados
     function updateResultArea(message) {
         resultArea.innerHTML = `<p>${message}</p>`;
     }
 
+    // Actualiza el estado de un escáner
     function updateScannerStatus(scannerId, status) {
         const badge = document.querySelector(`#scanner-status li:nth-child(${scannerId}) .badge`);
         badge.textContent = status;
         badge.className = `badge ${status === 'Activo' ? 'bg-success' : 'bg-danger'}`;
+    }
+
+    // Muestra los logs obtenidos del backend
+    function displayLogs(logs) {
+        resultArea.innerHTML = ''; // Limpia el área de resultados
+
+        if (logs.length === 0) {
+            resultArea.innerHTML = '<p>No hay registros en la bitácora.</p>';
+            return;
+        }
+
+        const table = document.createElement('table');
+        table.className = 'table table-striped';
+
+        // Encabezados de la tabla
+        const thead = document.createElement('thead');
+        thead.innerHTML = `
+            <tr>
+                <th>Fecha</th>
+                <th>Usuario</th>
+                <th>Evento</th>
+                <th>Detalle</th>
+            </tr>
+        `;
+        table.appendChild(thead);
+
+        // Cuerpo de la tabla
+        const tbody = document.createElement('tbody');
+        logs.forEach((log) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${new Date(log.fecha).toLocaleString()}</td>
+                <td>${log.usuario}</td>
+                <td>${log.evento}</td>
+                <td>${log.detalle}</td>
+            `;
+            tbody.appendChild(row);
+        });
+        table.appendChild(tbody);
+
+        resultArea.appendChild(table); // Agrega la tabla al área de resultados
     }
 });
