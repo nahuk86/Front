@@ -39,8 +39,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (response.ok) {
                 const logs = await response.json();
-                console.log(logs); // Verifica la estructura de los datos
-                displayLogs(logs);
+                displayLogs(logs); // Muestra los registros obtenidos
             } else {
                 const errorData = await response.json();
                 alert(`Error al generar el reporte: ${errorData.message || 'Error desconocido.'}`);
@@ -51,24 +50,17 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Botón Solicitar Envío de Notificaciones
-    document.getElementById('send-notifications').addEventListener('click', function () {
-        updateResultArea('Envío de notificaciones solicitado.');
-    });
-
-    // Actualiza el área de resultados con un mensaje
+    // Funciones auxiliares
     function updateResultArea(message) {
         resultArea.innerHTML = `<p>${message}</p>`;
     }
 
-    // Actualiza el estado de un escáner
     function updateScannerStatus(scannerId, status) {
         const badge = document.querySelector(`#scanner-status li:nth-child(${scannerId}) .badge`);
         badge.textContent = status;
         badge.className = `badge ${status === 'Activo' ? 'bg-success' : 'bg-danger'}`;
     }
 
-    // Muestra los logs obtenidos del backend
     function displayLogs(logs) {
         resultArea.innerHTML = ''; // Limpia el área de resultados
 
@@ -80,7 +72,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const table = document.createElement('table');
         table.className = 'table table-striped';
 
-        // Encabezados de la tabla
         const thead = document.createElement('thead');
         thead.innerHTML = `
             <tr>
@@ -92,7 +83,6 @@ document.addEventListener('DOMContentLoaded', function () {
         `;
         table.appendChild(thead);
 
-        // Cuerpo de la tabla
         const tbody = document.createElement('tbody');
         logs.forEach((log) => {
             const row = document.createElement('tr');
