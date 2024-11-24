@@ -18,7 +18,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
 
         if (!response.ok) {
-            throw new Error('Token inválido o expirado');
+            if (response.status === 401) {
+                throw new Error('Token expirado o inválido. Por favor, inicia sesión nuevamente.');
+            } else {
+                throw new Error('Error desconocido al validar el token.');
+            }
         }
 
         // Si la validación es exitosa, muestra el contenido del panel
@@ -26,8 +30,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         initializePanel(); // Llama a la función para inicializar las funcionalidades del panel
 
     } catch (error) {
-        console.error('Error de autenticación:', error);
-        alert('Tu sesión ha expirado. Por favor, inicia sesión nuevamente.');
+        console.error('Error de autenticación:', error.message);
+        alert(error.message || 'Tu sesión ha expirado. Por favor, inicia sesión nuevamente.');
         localStorage.removeItem('token'); // Limpia el token si es inválido
         window.location.href = 'login.html';
     }
@@ -60,7 +64,7 @@ function initializePanel() {
             const logs = await fetchLogs(); // Llama a la función para obtener los logs
             displayLogs(logs); // Muestra los logs en la tabla
         } catch (error) {
-            console.error('Error al generar el reporte:', error);
+            console.error('Error al generar el reporte:', error.message);
             alert('Ocurrió un error al intentar generar el reporte.');
         }
     });
@@ -89,7 +93,11 @@ async function fetchLogs() {
     });
 
     if (!response.ok) {
-        throw new Error('Error al obtener los logs.');
+        if (response.status === 404) {
+            return []; // No hay logs disponibles
+        } else {
+            throw new Error('Error al obtener los logs.');
+        }
     }
 
     return response.json(); // Devuelve los datos de los logs
@@ -106,7 +114,7 @@ function displayLogs(logs) {
     }
 
     const table = document.createElement('table');
-    table.className = 'table table-striped';
+    table.className = 'table table-striped table-hover';
 
     const thead = document.createElement('thead');
     thead.innerHTML = `

@@ -4,6 +4,17 @@
 export async function logEvent(email, accion, detalle) {
     const token = localStorage.getItem('token'); // Obtén el token desde localStorage
 
+    // Validar los parámetros antes de continuar
+    if (!email || !accion || !detalle) {
+        console.error('Error: Parámetros inválidos para registrar el evento.');
+        return;
+    }
+
+    if (!token) {
+        console.error('Error: No se encontró un token en el almacenamiento local.');
+        return;
+    }
+
     const logEntry = {
         Email: email,        // Correo del usuario autenticado
         Accion: accion,      // Acción registrada (Ej: "Inicio de sesión")
@@ -22,9 +33,10 @@ export async function logEvent(email, accion, detalle) {
         });
 
         if (response.ok) {
-            console.log('Evento registrado en la bitácora.');
+            console.log('Evento registrado en la bitácora:', logEntry);
         } else {
-            console.error('Error al registrar el evento en la bitácora:', response.statusText);
+            const errorResponse = await response.json();
+            console.error('Error al registrar el evento en la bitácora:', errorResponse.message || response.statusText);
         }
     } catch (error) {
         console.error('Error al enviar el log:', error);

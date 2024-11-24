@@ -11,7 +11,10 @@ document.addEventListener('DOMContentLoaded', () => {
             },
         })
             .then((response) => {
-                if (!response.ok) {
+                if (response.ok) {
+                    // Si el token es válido, redirige al panel
+                    window.location.href = 'panel.html';
+                } else {
                     console.log('Token inválido o expirado.');
                     localStorage.removeItem('token'); // Limpia el token si no es válido
                 }
