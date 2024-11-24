@@ -3,20 +3,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Botón Ver Escáneres Disponibles
     document.getElementById('view-scanners').addEventListener('click', function () {
-        // Simulación de la acción
         updateResultArea('Mostrando escáneres disponibles...');
     });
 
     // Botón Activar Escáner
     document.getElementById('activate-scanner').addEventListener('click', function () {
-        // Simulación de la acción
         updateResultArea('Escáner activado exitosamente.');
         updateScannerStatus(1, 'Activo');
     });
 
     // Botón Desactivar Escáner
     document.getElementById('deactivate-scanner').addEventListener('click', function () {
-        // Simulación de la acción
         updateResultArea('Escáner desactivado exitosamente.');
         updateScannerStatus(1, 'Inactivo');
     });
@@ -42,7 +39,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (response.ok) {
                 const logs = await response.json();
-                displayLogs(logs); // Muestra los registros obtenidos
+                console.log(logs); // Verifica la estructura de los datos
+                displayLogs(logs);
             } else {
                 const errorData = await response.json();
                 alert(`Error al generar el reporte: ${errorData.message || 'Error desconocido.'}`);
@@ -55,7 +53,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Botón Solicitar Envío de Notificaciones
     document.getElementById('send-notifications').addEventListener('click', function () {
-        // Simulación de la acción
         updateResultArea('Envío de notificaciones solicitado.');
     });
 
@@ -100,10 +97,10 @@ document.addEventListener('DOMContentLoaded', function () {
         logs.forEach((log) => {
             const row = document.createElement('tr');
             row.innerHTML = `
-                <td>${log.fecha ? new Date(log.fecha).toLocaleString() : 'Sin fecha'}</td>
-                <td>${log.usuario || 'Desconocido'}</td>
-                <td>${log.evento || 'Sin evento'}</td>
-                <td>${log.detalle || 'Sin detalle'}</td>
+                <td>${log.timestamp ? new Date(log.timestamp).toLocaleString() : 'Sin fecha'}</td>
+                <td>${log.user || 'Desconocido'}</td>
+                <td>${log.action || 'Sin evento'}</td>
+                <td>${log.description || 'Sin detalle'}</td>
             `;
             tbody.appendChild(row);
         });
