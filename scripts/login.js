@@ -15,7 +15,7 @@ document.getElementById('login-form').addEventListener('submit', async (event) =
             const data = await response.json();
             localStorage.setItem('token', data.Token); // Almacena el token en localStorage
             alert('Autenticación exitosa.');
-            window.location.href = 'private.html'; // Redirige a la pantalla privada
+            window.location.href = 'panel.html'; // Redirige a la pantalla privada
         } else {
             const errorData = await response.json();
             alert(errorData.message || 'Correo o contraseña incorrectos.');
