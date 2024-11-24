@@ -43,4 +43,3 @@ document.addEventListener('DOMContentLoaded', function () {
         badge.className = `badge ${status === 'Activo' ? 'bg-success' : 'bg-danger'}`;
     }
 });
-
