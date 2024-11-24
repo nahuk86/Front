@@ -1,10 +1,9 @@
 document.addEventListener('DOMContentLoaded', async () => {
     const token = localStorage.getItem('token'); // Verifica si hay un token almacenado
 
-    // Si no hay token, redirige al login inmediatamente
+    // Si no hay token, redirige inmediatamente al login
     if (!token) {
-        alert('No estás autenticado. Redirigiendo al inicio de sesión.');
-        window.location.href = 'login.html';
+        window.location.href = 'login.html'; // Redirige al login
         return;
     }
 
@@ -18,17 +17,16 @@ document.addEventListener('DOMContentLoaded', async () => {
             },
         });
 
+        // Si la validación falla, redirige al login
         if (!response.ok) {
-            // Si el token no es válido, redirige al login
             throw new Error('Token inválido o expirado');
         }
 
-        // Si el token es válido, muestra el contenido
+        // Si el token es válido, muestra el contenido del panel
         document.getElementById('private-content').style.display = 'block';
     } catch (error) {
         console.error('Error de autenticación:', error);
-        alert('Tu sesión ha expirado. Por favor, inicia sesión nuevamente.');
-        localStorage.removeItem('token'); // Elimina el token inválido
-        window.location.href = 'login.html';
+        localStorage.removeItem('token'); // Limpia el token si es inválido
+        window.location.href = 'login.html'; // Redirige al login
     }
 });
