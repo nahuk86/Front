@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (response.ok) {
                 const logs = await response.json();
-                displayLogs(logs);
+                displayLogs(logs); // Muestra los registros obtenidos
             } else {
                 const errorData = await response.json();
                 alert(`Error al generar el reporte: ${errorData.message || 'Error desconocido.'}`);
@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function () {
         updateResultArea('Envío de notificaciones solicitado.');
     });
 
-    // Actualiza el área de resultados
+    // Actualiza el área de resultados con un mensaje
     function updateResultArea(message) {
         resultArea.innerHTML = `<p>${message}</p>`;
     }
@@ -100,10 +100,10 @@ document.addEventListener('DOMContentLoaded', function () {
         logs.forEach((log) => {
             const row = document.createElement('tr');
             row.innerHTML = `
-                <td>${new Date(log.fecha).toLocaleString()}</td>
-                <td>${log.usuario}</td>
-                <td>${log.evento}</td>
-                <td>${log.detalle}</td>
+                <td>${log.fecha ? new Date(log.fecha).toLocaleString() : 'Sin fecha'}</td>
+                <td>${log.usuario || 'Desconocido'}</td>
+                <td>${log.evento || 'Sin evento'}</td>
+                <td>${log.detalle || 'Sin detalle'}</td>
             `;
             tbody.appendChild(row);
         });
