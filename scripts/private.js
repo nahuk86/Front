@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', async () => {
     const token = localStorage.getItem('token'); // Verifica si hay un token almacenado
 
-    // Si no hay token, muestra mensaje de error y redirige al inicio
+    // Si no hay token, muestra un mensaje de error y redirige al inicio
     if (!token) {
         alert('Error: Página privada. Por favor, inicia sesión primero.');
         window.location.href = 'index.html'; // Cambia a login.html si prefieres
