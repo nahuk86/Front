@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 function initializePanel() {
     const resultArea = document.getElementById('result-area');
 
-    // Generar Reporte
+    // Botón para generar reporte
     document.getElementById('generate-report').addEventListener('click', async () => {
         try {
             resultArea.innerHTML = `<p>Cargando registros de la bitácora...</p>`;
@@ -43,7 +43,7 @@ function initializePanel() {
         }
     });
 
-    // Escáneres
+    // Acciones de escáneres
     document.getElementById('activate-scanner').addEventListener('click', () => toggleScanner(true));
     document.getElementById('deactivate-scanner').addEventListener('click', () => toggleScanner(false));
 }
@@ -64,6 +64,7 @@ async function fetchLogs() {
 
 function displayLogs(logs) {
     const resultArea = document.getElementById('result-area');
+
     if (logs.length === 0) {
         resultArea.innerHTML = `<p>No hay registros en la bitácora.</p>`;
         return;
@@ -83,7 +84,7 @@ function displayLogs(logs) {
         <tbody>
             ${logs.map(log => `
                 <tr>
-                    <td>${log.fechaHora ? new Date(log.fechaHora).toLocaleString() : 'Sin fecha'}</td>
+                    <td>${formatDate(log.fechaHora)}</td>
                     <td>${log.email || 'Desconocido'}</td>
                     <td>${log.accion || 'Sin acción'}</td>
                     <td>${log.detalle || 'Sin detalle'}</td>
@@ -93,6 +94,16 @@ function displayLogs(logs) {
     `;
     resultArea.innerHTML = '';
     resultArea.appendChild(table);
+}
+
+function formatDate(dateString) {
+    if (!dateString) return 'Sin fecha';
+    try {
+        return new Date(dateString).toLocaleString();
+    } catch (error) {
+        console.error('Error al formatear la fecha:', error);
+        return 'Formato de fecha inválido';
+    }
 }
 
 async function toggleScanner(enable) {
