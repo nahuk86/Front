@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token'); // Obtiene el token almacenado
 
     if (!token) {
         alert('No estás autenticado. Redirigiendo al inicio de sesión.');
@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     try {
+        // Valida el token con el backend
         const response = await fetch('https://mdw-back-ops20241124110904.azurewebsites.net/api/Account/validate-token', {
             method: 'GET',
             headers: {
@@ -18,8 +19,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         if (!response.ok) throw new Error('Token inválido o expirado.');
 
-        console.log('Token válido. Inicializando panel.');
-        initializePanel(); // Llama a la función para cargar el contenido del panel
+        console.log('Token válido. Inicializando el panel.');
+        initializePanel(); // Inicializa el contenido del panel
     } catch (error) {
         console.error('Error de autenticación:', error);
         alert('Tu sesión ha expirado. Por favor, inicia sesión nuevamente.');
@@ -28,7 +29,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
-// Función para inicializar el contenido del panel
+// Inicialización del panel
 function initializePanel() {
     const resultArea = document.getElementById('result-area');
 
@@ -49,7 +50,7 @@ function initializePanel() {
             const logs = await fetchLogs();
             displayLogs(logs);
         } catch (error) {
-            console.error('Error al generar reporte:', error);
+            console.error('Error al generar el reporte:', error);
             alert('Error al generar el reporte.');
         }
     });
@@ -71,7 +72,6 @@ async function fetchLogs() {
     });
 
     if (!response.ok) throw new Error('Error al obtener logs.');
-
     return response.json();
 }
 

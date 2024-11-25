@@ -18,8 +18,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         if (!response.ok) throw new Error('Token inválido o expirado.');
 
-        console.log('Token válido. Redirigiendo al panel.');
-        window.location.href = 'panel.html'; // Redirige al panel si el token es válido
+        console.log('Redirigiendo al panel.');
+        window.location.href = 'panel.html'; // Redirige al panel
     } catch (error) {
         console.error('Error de autenticación:', error);
         alert('Tu sesión ha expirado. Por favor, inicia sesión nuevamente.');
