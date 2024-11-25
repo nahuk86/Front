@@ -85,8 +85,8 @@ function displayLogs(logs) {
         <tbody>
             ${logs.map(log => `
                 <tr>
-                    <td>${new Date(log.Fecha).toLocaleString()}</td>
-                    <td>${log.Email || 'Desconocido'}</td>
+                    <td>${log.Fecha ? new Date(log.Fecha).toLocaleString() : 'Fecha no registrada'}</td>
+                    <td>${log.Email || 'Usuario desconocido'}</td>
                     <td>${log.Accion || 'Sin acción'}</td>
                     <td>${log.Detalle || 'Sin detalle'}</td>
                 </tr>
@@ -104,27 +104,28 @@ async function toggleScanner(scannerId, enable) {
             id: scannerId,
             action: enable ? 'activate' : 'deactivate',
         };
-        await sendToRabbitMQ(message);
+
+        const response = await fetch('https://package-acceptance-service.srv604097.hstgr.cloud/api/scanners/status', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(message),
+        });
+
+        if (!response.ok) throw new Error('Error al cambiar el estado del escáner');
+
         alert(`Escáner ${scannerId} ${enable ? 'activado' : 'desactivado'} exitosamente.`);
+        updateScannerStatus(scannerId, enable ? 'Activo' : 'Inactivo');
     } catch (error) {
         console.error('Error al modificar el estado del escáner:', error);
         alert('No se pudo modificar el estado del escáner. Intenta nuevamente.');
     }
 }
 
-// Función para enviar mensajes a RabbitMQ
-async function sendToRabbitMQ(message) {
-    const queue = 'scanner_data'; // Cola para manejar los escáneres
-    const response = await fetch('https://package-acceptance-service.srv604097.hstgr.cloud/api/queue/send', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            queue,
-            message,
-        }),
-    });
-
-    if (!response.ok) throw new Error('Error al enviar mensaje a RabbitMQ');
+// Actualiza el estado visual de los escáneres
+function updateScannerStatus(scannerId, status) {
+    const badge = document.querySelector(`#scanner-status li:nth-child(${scannerId}) .badge`);
+    badge.textContent = status;
+    badge.className = `badge ${status === 'Activo' ? 'bg-success' : 'bg-danger'}`;
 }
