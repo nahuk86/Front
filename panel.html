@@ -10,6 +10,7 @@
 <body style="display: none;" id="private-content">
     <div class="container-fluid mt-4">
         <h1 class="text-center mb-4">Panel de Control Operacional</h1>
+
         <!-- Gestión de Escáneres -->
         <div class="row">
             <div class="col-md-8 mb-4">
@@ -21,10 +22,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <h5>Estado de los Escáneres</h5>
-                                <ul id="scanner-status">
-                                    <li>Escáner 1: <span class="badge bg-success">Activo</span></li>
-                                    <li>Escáner 2: <span class="badge bg-danger">Inactivo</span></li>
-                                </ul>
+                                <ul id="scanner-status"></ul>
                             </div>
                             <div class="col-md-6">
                                 <h5>Acciones de Escáneres</h5>
@@ -36,35 +34,21 @@
                     </div>
                 </div>
             </div>
-            <!-- Gestión de Reportes y Notificaciones -->
+            <!-- Gestión de Resultados -->
             <div class="col-md-4 mb-4">
                 <div class="card">
-                    <div class="card-header bg-secondary text-white">
-                        Gestión de Reportes y Notificaciones
-                    </div>
-                    <div class="card-body">
-                        <button class="btn btn-success w-100 mb-2" id="generate-report">Generar Reporte</button>
-                        <button class="btn btn-primary w-100 mb-2" id="send-notifications">Solicitar Envío de Notificaciones</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Panel de Resultados -->
-        <div class="row mt-4">
-            <div class="col-12">
-                <div class="card">
                     <div class="card-header bg-dark text-white">
-                        Resultados y Logs
+                        Resultados
                     </div>
                     <div class="card-body">
                         <div id="result-area" class="p-3" style="min-height: 200px; background-color: #f8f9fa;">
-                            <p class="text-muted">Aquí se mostrarán los resultados de las consultas y las acciones realizadas.</p>
+                            <p class="text-muted">Aquí se mostrarán los resultados.</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <script src="scripts/script.js"></script>
+    <script src="scripts/panel.js"></script>
 </body>
 </html>
