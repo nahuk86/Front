@@ -73,9 +73,7 @@ async function fetchLogs() {
             return [];
         }
 
-        const logs = await response.json(); // Devuelve los datos de los logs
-        console.log('Logs obtenidos:', logs); // Para depuración
-        return logs;
+        return response.json(); // Devuelve los datos de los logs
     } catch (error) {
         console.error('Error de red al obtener los logs:', error);
         alert('Error de red. Intenta nuevamente.');
@@ -109,12 +107,18 @@ function displayLogs(logs) {
 
     const tbody = document.createElement('tbody');
     logs.forEach((log) => {
+        // Ajusta los campos basándote en la estructura esperada de la API
+        const fecha = log.Fecha || log.timestamp || 'Sin fecha';
+        const email = log.Email || log.user || 'Desconocido';
+        const accion = log.Accion || log.action || 'Sin acción';
+        const detalle = log.Detalle || log.description || 'Sin detalle';
+
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td>${log.Fecha ? new Date(log.Fecha).toLocaleString() : 'Sin fecha'}</td>
-            <td>${log.Email || 'Desconocido'}</td>
-            <td>${log.Accion || 'Sin acción'}</td>
-            <td>${log.Detalle || 'Sin detalle'}</td>
+            <td>${fecha !== 'Sin fecha' ? new Date(fecha).toLocaleString() : 'Sin fecha'}</td>
+            <td>${email}</td>
+            <td>${accion}</td>
+            <td>${detalle}</td>
         `;
         tbody.appendChild(row);
     });
