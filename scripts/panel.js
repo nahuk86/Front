@@ -1,5 +1,3 @@
-import { logEvent } from './utils/log.js';
-
 document.addEventListener('DOMContentLoaded', async () => {
     const token = localStorage.getItem('token');
 
@@ -39,10 +37,6 @@ function initializePanel() {
             resultArea.innerHTML = `<p>Cargando registros de la bitácora...</p>`;
             const logs = await fetchLogs();
             displayLogs(logs);
-
-            // Registrar evento en bitácora
-            const email = localStorage.getItem('userEmail');
-            await logEvent(email, 'Consulta', 'Generación de reporte de bitácora.');
         } catch (error) {
             console.error('Error al generar el reporte:', error);
             resultArea.innerHTML = `<p class="text-danger">Ocurrió un error al intentar generar el reporte.</p>`;
@@ -89,10 +83,10 @@ function displayLogs(logs) {
         <tbody>
             ${logs.map(log => `
                 <tr>
-                    <td>${log.Fecha ? new Date(log.Fecha).toLocaleString() : 'Sin fecha'}</td>
-                    <td>${log.Email || 'Desconocido'}</td>
-                    <td>${log.Accion || 'Sin acción'}</td>
-                    <td>${log.Detalle || 'Sin detalle'}</td>
+                    <td>${log.fechaHora ? new Date(log.fechaHora).toLocaleString() : 'Sin fecha'}</td>
+                    <td>${log.email || 'Desconocido'}</td>
+                    <td>${log.accion || 'Sin acción'}</td>
+                    <td>${log.detalle || 'Sin detalle'}</td>
                 </tr>
             `).join('')}
         </tbody>
@@ -102,14 +96,18 @@ function displayLogs(logs) {
 }
 
 async function toggleScanner(enable) {
-    const scannerId = prompt('Ingrese el ID del escáner:');
+    const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+    const apiUrl = 'https://package-acceptance-service.srv604097.hstgr.cloud/api/scanners/status';
+    const fullUrl = `${proxyUrl}${apiUrl}`;
+    const scannerId = document.getElementById('scanner-id').value;
+
     if (!scannerId) {
         alert('Por favor, ingresa un ID de escáner válido.');
         return;
     }
 
     try {
-        const response = await fetch('https://package-acceptance-service.srv604097.hstgr.cloud/api/scanners/status', {
+        const response = await fetch(fullUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -120,10 +118,6 @@ async function toggleScanner(enable) {
         if (!response.ok) throw new Error('Error al cambiar el estado del escáner');
 
         alert(`Escáner ${scannerId} ${enable ? 'activado' : 'desactivado'} exitosamente.`);
-
-        // Registrar evento en bitácora
-        const email = localStorage.getItem('userEmail');
-        await logEvent(email, enable ? 'Activación de escáner' : 'Desactivación de escáner', `ID del escáner: ${scannerId}`);
     } catch (error) {
         console.error('Error al modificar el estado del escáner:', error);
         alert('No se pudo modificar el estado del escáner. Intenta nuevamente.');
