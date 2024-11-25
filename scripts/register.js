@@ -1,19 +1,9 @@
 document.getElementById('register-form').addEventListener('submit', async (event) => {
     event.preventDefault();
 
-    const name = document.getElementById('name').value.trim();
-    const email = document.getElementById('email').value.trim();
-    const password = document.getElementById('password').value.trim();
-
-    if (!name || !email || !password) {
-        alert('Por favor, completa todos los campos.');
-        return;
-    }
-
-    if (password.length < 6) {
-        alert('La contraseña debe tener al menos 6 caracteres.');
-        return;
-    }
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
 
     try {
         const response = await fetch('https://mdw-back-ops20241124110904.azurewebsites.net/api/Account/register', {
@@ -24,13 +14,13 @@ document.getElementById('register-form').addEventListener('submit', async (event
 
         if (response.ok) {
             alert('Registro exitoso. Por favor, inicia sesión.');
-            window.location.href = 'login.html';
+            window.location.href = 'login.html'; // Redirige a la pantalla de login
         } else {
             const errorData = await response.json();
             alert(errorData.message || 'Error al registrarse.');
         }
     } catch (error) {
-        console.error('Error de red:', error);
+        console.error('Error:', error);
         alert('Error de red. Intenta nuevamente.');
     }
 });

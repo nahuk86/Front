@@ -10,13 +10,9 @@ body {
 
 .container {
     text-align: center;
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-h1, h2 {
+h1 {
     color: #333;
 }
 
@@ -24,19 +20,17 @@ p {
     margin-bottom: 20px;
 }
 
-.buttons .btn, button {
+.buttons .btn {
     display: inline-block;
-    margin: 10px;
+    margin: 0 10px;
     padding: 10px 20px;
     background-color: #007bff;
     color: white;
     text-decoration: none;
     border-radius: 5px;
-    border: none;
-    cursor: pointer;
 }
 
-.buttons .btn:hover, button:hover {
+.buttons .btn:hover {
     background-color: #0056b3;
 }
 
@@ -53,4 +47,17 @@ form input {
     margin-bottom: 15px;
     border: 1px solid #ddd;
     border-radius: 5px;
+}
+
+button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
 }
