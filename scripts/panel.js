@@ -20,7 +20,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         document.getElementById('private-content').style.display = 'block';
         initializePanel();
-        startLongPolling(); // Inicia la lógica de long polling
     } catch (error) {
         console.error('Error de autenticación:', error);
         alert('Tu sesión ha expirado. Por favor, inicia sesión nuevamente.');
@@ -32,44 +31,37 @@ document.addEventListener('DOMContentLoaded', async () => {
 function initializePanel() {
     const resultArea = document.getElementById('result-area');
 
-    // Escáneres
+    document.getElementById('generate-report').addEventListener('click', async () => {
+        try {
+            resultArea.innerHTML = `<p>Cargando registros de la bitácora...</p>`;
+            const logs = await fetchLogs();
+            displayLogs(logs);
+        } catch (error) {
+            console.error('Error al generar el reporte:', error);
+            resultArea.innerHTML = `<p class="text-danger">Ocurrió un error al intentar generar el reporte.</p>`;
+        }
+    });
+
     document.getElementById('activate-scanner').addEventListener('click', () => toggleScanner(true));
     document.getElementById('deactivate-scanner').addEventListener('click', () => toggleScanner(false));
 }
 
-// Long Polling: Actualiza los logs periódicamente
-async function startLongPolling() {
+async function fetchLogs() {
     const token = localStorage.getItem('token');
+    const response = await fetch('https://mdw-back-ops20241124110904.azurewebsites.net/api/Bitacora/todos', {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+    });
 
-    try {
-        while (true) {
-            const response = await fetch('https://mdw-back-ops20241124110904.azurewebsites.net/api/Bitacora/todos', {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                },
-            });
-
-            if (!response.ok) throw new Error('Error al obtener datos de la API.');
-
-            const logs = await response.json();
-            console.log('Respuesta recibida:', logs);
-
-            updateLogs(logs); // Actualiza los logs en el frontend
-
-            // Espera 5 segundos antes de realizar otra solicitud
-            await new Promise(resolve => setTimeout(resolve, 5000));
-        }
-    } catch (error) {
-        console.error('Error durante el long polling:', error);
-    }
+    if (!response.ok) throw new Error('Error al obtener los logs');
+    return response.json();
 }
 
-// Actualiza los logs en el frontend
-function updateLogs(logs) {
+function displayLogs(logs) {
     const resultArea = document.getElementById('result-area');
-
     if (logs.length === 0) {
         resultArea.innerHTML = `<p>No hay registros en la bitácora.</p>`;
         return;
@@ -89,10 +81,10 @@ function updateLogs(logs) {
         <tbody>
             ${logs.map(log => `
                 <tr>
-                    <td>${log.fechaHora ? new Date(log.fechaHora).toLocaleString() : 'Sin fecha'}</td>
-                    <td>${log.email || 'Desconocido'}</td>
-                    <td>${log.accion || 'Sin acción'}</td>
-                    <td>${log.detalle || 'Sin detalle'}</td>
+                    <td>${log.Fecha ? new Date(log.Fecha).toLocaleString() : 'Sin fecha'}</td>
+                    <td>${log.Email || 'Desconocido'}</td>
+                    <td>${log.Accion || 'Sin acción'}</td>
+                    <td>${log.Detalle || 'Sin detalle'}</td>
                 </tr>
             `).join('')}
         </tbody>
@@ -101,7 +93,6 @@ function updateLogs(logs) {
     resultArea.appendChild(table);
 }
 
-// Cambiar el estado del escáner (activar/desactivar)
 async function toggleScanner(enable) {
     const scannerId = document.getElementById('scanner-id').value;
     if (!scannerId) {
