@@ -1,72 +1,83 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/private.css">
     <title>Panel de Control Operacional</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
 </head>
-<body style="display: none;" id="private-content">
-    <div class="container-fluid mt-4">
-        <h1 class="text-center mb-4">Panel de Control Operacional</h1>
+<body>
+    <div class="container mt-4" id="private-content" style="display: none;">
+        <h1 class="text-center">Panel de Control Operacional</h1>
 
         <!-- Gestión de Escáneres -->
-        <div class="row">
-            <div class="col-md-8 mb-4">
+        <div class="row mt-4">
+            <div class="col-md-6">
                 <div class="card">
-                    <div class="card-header bg-primary text-white">
-                        Gestión de Escáneres
-                    </div>
+                    <div class="card-header bg-primary text-white">Gestión de Escáneres</div>
                     <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h5>Estado de los Escáneres</h5>
-                                <ul id="scanner-status">
-                                    <li>Escáner 1: <span class="badge bg-success">Activo</span></li>
-                                    <li>Escáner 2: <span class="badge bg-danger">Inactivo</span></li>
-                                </ul>
-                            </div>
-                            <div class="col-md-6">
-                                <h5>Acciones de Escáneres</h5>
-                                <input type="text" id="scanner-id" class="form-control mb-2" placeholder="ID del escáner">
-                                <button class="btn btn-warning w-100 mb-2" id="activate-scanner">Activar Escáner</button>
-                                <button class="btn btn-danger w-100 mb-2" id="deactivate-scanner">Desactivar Escáner</button>
-                            </div>
+                        <p id="scanner-status">
+                            <b>Estado de los Escáneres:</b>
+                            <ul>
+                                <li>Escáner 1: <span class="text-success">Activo</span></li>
+                                <li>Escáner 2: <span class="text-danger">Inactivo</span></li>
+                            </ul>
+                        </p>
+                        <div class="mb-3">
+                            <input type="text" id="scanner-id" class="form-control" placeholder="Ingrese ID del escáner">
                         </div>
+                        <button id="activate-scanner" class="btn btn-warning w-100">Activar Escáner</button>
+                        <button id="deactivate-scanner" class="btn btn-danger w-100 mt-2">Desactivar Escáner</button>
                     </div>
                 </div>
             </div>
 
-            <!-- Gestión de Reportes -->
-            <div class="col-md-4 mb-4">
+            <!-- Generar Reportes -->
+            <div class="col-md-6">
                 <div class="card">
-                    <div class="card-header bg-secondary text-white">
-                        Gestión de Reportes
-                    </div>
+                    <div class="card-header bg-secondary text-white">Gestión de Reportes</div>
                     <div class="card-body">
-                        <button class="btn btn-success w-100 mb-2" id="generate-report">Generar Reporte</button>
+                        <button id="generate-report" class="btn btn-success w-100">Generar Reporte</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Panel de Resultados -->
-        <div class="row mt-4">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header bg-dark text-white">
-                        Resultados y Logs
-                    </div>
-                    <div class="card-body">
-                        <div id="result-area" class="p-3" style="min-height: 200px; background-color: #f8f9fa;">
-                            <p class="text-muted">Aquí se mostrarán los resultados de las consultas y las acciones realizadas.</p>
-                        </div>
-                    </div>
+        <!-- Estado de Microservicios -->
+        <div id="microservices-status" class="mt-4">
+            <h3>Estado de los Microservicios</h3>
+            <p>Cargando...</p>
+        </div>
+
+        <!-- Resultados y Logs -->
+        <div class="card mt-4">
+            <div class="card-header bg-dark text-white">Resultados y Logs</div>
+            <div class="card-body" id="result-area">
+                <p>Cargando registros...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Error -->
+    <div id="error-modal" class="modal" style="display: none;">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Error</h5>
+                    <button type="button" id="close-modal" class="btn-close" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="error-modal-body"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="close-modal-footer" class="btn btn-secondary">Cerrar</button>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Scripts -->
     <script src="scripts/panel.js"></script>
 </body>
 </html>
