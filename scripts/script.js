@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         console.log('Token válido. Mostrando el panel.');
-        document.getElementById('panel-content').style.display = 'block';
+        document.getElementById('private-content').style.display = 'block';
 
         // Inicializar funcionalidades del panel
         initializePanel();
@@ -41,6 +41,7 @@ function initializePanel() {
     // Botón Generar Reporte
     document.getElementById('generate-report').addEventListener('click', async () => {
         try {
+            updateResultArea('Cargando registros de la bitácora...');
             const logs = await fetchLogs(); // Llama a la función para obtener los logs
             displayLogs(logs); // Muestra los logs en la tabla
         } catch (error) {
@@ -49,7 +50,6 @@ function initializePanel() {
         }
     });
 
-    // Actualiza el área de resultados
     function updateResultArea(message) {
         resultArea.innerHTML = `<p>${message}</p>`;
     }
@@ -59,19 +59,28 @@ function initializePanel() {
 async function fetchLogs() {
     const token = localStorage.getItem('token'); // Obtiene el token del almacenamiento local
 
-    const response = await fetch('https://mdw-back-ops20241124110904.azurewebsites.net/api/Bitacora/todos', {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-        },
-    });
+    try {
+        const response = await fetch('https://mdw-back-ops20241124110904.azurewebsites.net/api/Bitacora/todos', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+        });
 
-    if (!response.ok) {
-        throw new Error('Error al obtener los logs.');
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error('Error al obtener los logs:', errorData);
+            alert('No se pudieron obtener los registros: ' + (errorData.message || 'Error desconocido.'));
+            return [];
+        }
+
+        return response.json(); // Devuelve los datos de los logs
+    } catch (error) {
+        console.error('Error de red al obtener los logs:', error);
+        alert('Error de red. Intenta nuevamente.');
+        return [];
     }
-
-    return response.json(); // Devuelve los datos de los logs
 }
 
 // Función para mostrar los logs en la tabla
