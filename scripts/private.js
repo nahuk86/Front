@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     try {
-        // Valida el token con el backend
         const response = await fetch('https://mdw-back-ops20241124110904.azurewebsites.net/api/Account/validate-token', {
             method: 'GET',
             headers: {
@@ -21,10 +20,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             throw new Error('Token inválido o expirado');
         }
 
-        // Si estás en private.html, redirige al panel
-        if (window.location.pathname.includes('private.html')) {
-            window.location.href = 'panel.html';
-        }
+        console.log('Token válido. Redirigiendo al panel.');
+        window.location.href = 'panel.html'; // Redirige siempre al panel
     } catch (error) {
         console.error('Error de autenticación:', error);
         alert('Tu sesión ha expirado. Por favor, inicia sesión nuevamente.');
