@@ -43,7 +43,18 @@ function initializePanel() {
         }
     });
 
-    // Escáneres
+    // Ver escáneres disponibles
+    document.getElementById('view-scanners').addEventListener('click', async () => {
+        try {
+            const scanners = await fetchScanners();
+            displayScanners(scanners);
+        } catch (error) {
+            console.error('Error al obtener los escáneres:', error);
+            alert('No se pudieron obtener los escáneres disponibles.');
+        }
+    });
+
+    // Activar y Desactivar Escáner
     document.getElementById('activate-scanner').addEventListener('click', () => toggleScanner(true));
     document.getElementById('deactivate-scanner').addEventListener('click', () => toggleScanner(false));
 }
@@ -75,7 +86,7 @@ function displayLogs(logs) {
         <thead>
             <tr>
                 <th>Fecha</th>
-                <th>Usuario</th>
+                <th>Email</th>
                 <th>Acción</th>
                 <th>Detalle</th>
             </tr>
@@ -83,16 +94,39 @@ function displayLogs(logs) {
         <tbody>
             ${logs.map(log => `
                 <tr>
-                    <td>${log.Fecha ? new Date(log.Fecha).toLocaleString() : 'Sin fecha'}</td>
-                    <td>${log.Email || 'Desconocido'}</td>
-                    <td>${log.Accion || 'Sin acción'}</td>
-                    <td>${log.Detalle || 'Sin detalle'}</td>
+                    <td>${log.fechaHora ? new Date(log.fechaHora).toLocaleString() : 'Sin fecha'}</td>
+                    <td>${log.email || 'Desconocido'}</td>
+                    <td>${log.accion || 'Sin acción'}</td>
+                    <td>${log.detalle || 'Sin detalle'}</td>
                 </tr>
             `).join('')}
         </tbody>
     `;
     resultArea.innerHTML = '';
     resultArea.appendChild(table);
+}
+
+async function fetchScanners() {
+    const response = await fetch('https://package-acceptance-service.srv604097.hstgr.cloud/api/scanners', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+
+    if (!response.ok) throw new Error('Error al obtener los escáneres');
+    return response.json();
+}
+
+function displayScanners(scanners) {
+    const scannerStatus = document.getElementById('scanner-status');
+    scannerStatus.innerHTML = scanners.map(scanner => `
+        <li>
+            Escáner ${scanner.id}: <span class="badge ${scanner.active ? 'bg-success' : 'bg-danger'}">
+                ${scanner.active ? 'Activo' : 'Inactivo'}
+            </span>
+        </li>
+    `).join('');
 }
 
 async function toggleScanner(enable) {
@@ -114,6 +148,8 @@ async function toggleScanner(enable) {
         if (!response.ok) throw new Error('Error al cambiar el estado del escáner');
 
         alert(`Escáner ${scannerId} ${enable ? 'activado' : 'desactivado'} exitosamente.`);
+        const scanners = await fetchScanners();
+        displayScanners(scanners);
     } catch (error) {
         console.error('Error al modificar el estado del escáner:', error);
         alert('No se pudo modificar el estado del escáner. Intenta nuevamente.');
