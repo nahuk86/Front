@@ -1,3 +1,4 @@
+/* Estilo general */
 body {
     font-family: Arial, sans-serif;
     display: flex;
@@ -10,34 +11,49 @@ body {
 
 .container {
     text-align: center;
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 90%;
 }
 
-h1 {
+/* Títulos */
+h1, h2 {
     color: #333;
-}
-
-p {
     margin-bottom: 20px;
+    font-size: 1.8rem;
 }
 
-.buttons .btn {
+/* Botones */
+.buttons .btn, button {
     display: inline-block;
-    margin: 0 10px;
+    margin: 10px;
     padding: 10px 20px;
     background-color: #007bff;
     color: white;
     text-decoration: none;
     border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s ease-in-out;
 }
 
-.buttons .btn:hover {
+.buttons .btn:hover, button:hover {
     background-color: #0056b3;
+}
+
+/* Formularios */
+form {
+    margin-top: 20px;
+    text-align: left;
 }
 
 form label {
     display: block;
     margin-bottom: 5px;
-    text-align: left;
     color: #333;
 }
 
@@ -47,17 +63,28 @@ form input {
     margin-bottom: 15px;
     border: 1px solid #ddd;
     border-radius: 5px;
+    font-size: 1rem;
 }
 
-button {
+form button {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
     background-color: #007bff;
     color: white;
-    padding: 10px 20px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    transition: all 0.3s ease-in-out;
 }
 
-button:hover {
+form button:hover {
     background-color: #0056b3;
+}
+
+/* Textos */
+p {
+    margin-bottom: 20px;
+    color: #555;
+    font-size: 1rem;
 }
