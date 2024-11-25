@@ -41,6 +41,7 @@ function initializePanel() {
         try {
             updateResultArea('Cargando registros de la bitácora...');
             const logs = await fetchLogs(); // Llama a la función para obtener los logs
+            console.log(logs); // Imprime los datos obtenidos para verificar
             displayLogs(logs); // Muestra los logs en la tabla
         } catch (error) {
             console.error('Error al generar el reporte:', error);
@@ -73,7 +74,9 @@ async function fetchLogs() {
             return [];
         }
 
-        return response.json(); // Devuelve los datos de los logs
+        const logs = await response.json();
+        console.log('Respuesta de la API:', logs); // Depura la estructura de los datos
+        return logs; // Devuelve los datos de los logs
     } catch (error) {
         console.error('Error de red al obtener los logs:', error);
         alert('Error de red. Intenta nuevamente.');
@@ -107,7 +110,7 @@ function displayLogs(logs) {
 
     const tbody = document.createElement('tbody');
     logs.forEach((log) => {
-        // Ajusta los campos basándote en la estructura esperada de la API
+        console.log('Log individual:', log); // Depura cada log para identificar los campos
         const fecha = log.Fecha || log.timestamp || log.fecha || 'Sin fecha';
         const email = log.Email || log.user || log.usuario || 'Desconocido';
         const accion = log.Accion || log.action || log.evento || 'Sin acción';
