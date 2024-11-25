@@ -21,9 +21,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             throw new Error('Token inválido o expirado');
         }
 
-        // Si la validación es exitosa, permite el acceso al panel
+        // Inicializa las funcionalidades del panel
         console.log('Acceso autorizado al panel.');
-        initializePanel(); // Inicializa las funcionalidades del panel
+        initializePanel();
 
     } catch (error) {
         console.error('Error de autenticación:', error);
@@ -57,42 +57,15 @@ function initializePanel() {
     // Botón Generar Reporte
     document.getElementById('generate-report').addEventListener('click', async function () {
         try {
-<<<<<<< HEAD
             const logs = await fetchLogs(); // Llama a la función para obtener los logs
             displayLogs(logs); // Muestra los logs en la tabla
-=======
-            const response = await fetch('https://mdw-back-ops20241124110904.azurewebsites.net/api/Bitacora/todos', {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                },
-            });
-
-            if (response.ok) {
-                const logs = await response.json();
-                displayLogs(logs);
-            } else {
-                const errorData = await response.json();
-                alert(`Error al generar el reporte: ${errorData.message || 'Error desconocido.'}`);
-            }
->>>>>>> parent of 61f2306 (modificaciones generar reportes)
         } catch (error) {
             console.error('Error al generar el reporte:', error);
             alert('Ocurrió un error al intentar generar el reporte.');
         }
     });
 
-<<<<<<< HEAD
-=======
-    // Botón Solicitar Envío de Notificaciones
-    document.getElementById('send-notifications').addEventListener('click', function () {
-        // Simulación de la acción
-        updateResultArea('Envío de notificaciones solicitado.');
-    });
-
     // Actualiza el área de resultados
->>>>>>> parent of 61f2306 (modificaciones generar reportes)
     function updateResultArea(message) {
         resultArea.innerHTML = `<p>${message}</p>`;
     }
@@ -116,41 +89,8 @@ async function fetchLogs() {
         },
     });
 
-<<<<<<< HEAD
     if (!response.ok) {
         throw new Error('Error al obtener los logs.');
-=======
-        const table = document.createElement('table');
-        table.className = 'table table-striped';
-
-        // Encabezados de la tabla
-        const thead = document.createElement('thead');
-        thead.innerHTML = `
-            <tr>
-                <th>Fecha</th>
-                <th>Usuario</th>
-                <th>Evento</th>
-                <th>Detalle</th>
-            </tr>
-        `;
-        table.appendChild(thead);
-
-        // Cuerpo de la tabla
-        const tbody = document.createElement('tbody');
-        logs.forEach((log) => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${new Date(log.fecha).toLocaleString()}</td>
-                <td>${log.usuario}</td>
-                <td>${log.evento}</td>
-                <td>${log.detalle}</td>
-            `;
-            tbody.appendChild(row);
-        });
-        table.appendChild(tbody);
-
-        resultArea.appendChild(table); // Agrega la tabla al área de resultados
->>>>>>> parent of 61f2306 (modificaciones generar reportes)
     }
 
     return response.json(); // Devuelve los datos de los logs

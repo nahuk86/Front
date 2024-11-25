@@ -1,10 +1,8 @@
 // utils/log.js
 
-// Función para registrar eventos en la bitácora
 export async function logEvent(email, accion, detalle) {
     const token = localStorage.getItem('token'); // Obtén el token desde localStorage
 
-    // Validar los parámetros antes de continuar
     if (!email || !accion || !detalle) {
         console.error('Error: Parámetros inválidos para registrar el evento.');
         return;
@@ -16,9 +14,9 @@ export async function logEvent(email, accion, detalle) {
     }
 
     const logEntry = {
-        Email: email,        // Correo del usuario autenticado
-        Accion: accion,      // Acción registrada (Ej: "Inicio de sesión")
-        Detalle: detalle,    // Detalles adicionales del evento
+        Email: email,
+        Accion: accion,
+        Detalle: detalle,
         Fecha: new Date().toISOString(), // Fecha actual en formato ISO
     };
 
