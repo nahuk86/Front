@@ -1,5 +1,3 @@
-const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-
 document.addEventListener('DOMContentLoaded', async () => {
     const token = localStorage.getItem('token');
 
@@ -22,10 +20,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         document.getElementById('private-content').style.display = 'block';
         initializePanel();
-        checkMicroservices();
     } catch (error) {
         console.error('Error de autenticación:', error);
-        showErrorModal('Tu sesión ha expirado. Por favor, inicia sesión nuevamente.');
+        alert('Tu sesión ha expirado. Por favor, inicia sesión nuevamente.');
         localStorage.removeItem('token');
         window.location.href = 'login.html';
     }
@@ -42,7 +39,7 @@ function initializePanel() {
             displayLogs(logs);
         } catch (error) {
             console.error('Error al generar el reporte:', error);
-            showErrorModal('Ocurrió un error al intentar generar el reporte.');
+            resultArea.innerHTML = `<p class="text-danger">Ocurrió un error al intentar generar el reporte.</p>`;
         }
     });
 
@@ -99,65 +96,30 @@ function displayLogs(logs) {
 }
 
 async function toggleScanner(enable) {
+    const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+    const apiUrl = 'https://package-acceptance-service.srv604097.hstgr.cloud/api/scanners/status';
+    const fullUrl = `${proxyUrl}${apiUrl}`;
     const scannerId = document.getElementById('scanner-id').value;
+
     if (!scannerId) {
-        showErrorModal('Por favor, ingresa un ID de escáner válido.');
+        alert('Por favor, ingresa un ID de escáner válido.');
         return;
     }
 
     try {
-        const response = await fetch(`${proxyUrl}https://package-acceptance-service.srv604097.hstgr.cloud/api/scanners/status`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: scannerId, enabled: enable }),
+        const response = await fetch(fullUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ id: scannerId, action: enable ? 'activate' : 'deactivate' }),
         });
 
         if (!response.ok) throw new Error('Error al cambiar el estado del escáner');
 
-        const result = await response.json();
-        alert(`Escáner ${scannerId} ${enable ? 'activado' : 'desactivado'}: ${result.message || 'Éxito'}`);
+        alert(`Escáner ${scannerId} ${enable ? 'activado' : 'desactivado'} exitosamente.`);
     } catch (error) {
         console.error('Error al modificar el estado del escáner:', error);
-        showErrorModal('No se pudo modificar el estado del escáner. Intenta nuevamente.');
+        alert('No se pudo modificar el estado del escáner. Intenta nuevamente.');
     }
 }
-
-async function checkMicroservices() {
-    const microservices = [
-        { name: 'Aceptación de paquetes', url: 'https://package-acceptance-service.srv604097.hstgr.cloud/api/-/healthz' },
-        { name: 'Rechazo de paquetes', url: 'https://package-rejection.srv604097.hstgr.cloud/api/-/healthz' },
-        { name: 'Tarifas', url: 'https://pricing-mdw-uai.srv604097.hstgr.cloud/api/-/healthz' },
-    ];
-
-    const statuses = await Promise.all(
-        microservices.map(async (service) => {
-            try {
-                const response = await fetch(`${proxyUrl}${service.url}`);
-                const data = await response.json();
-                return { name: service.name, healthy: data.Healthy, enabled: data.Enabled };
-            } catch (error) {
-                console.error(`Error al consultar el estado de ${service.name}:`, error);
-                return { name: service.name, healthy: false, enabled: false };
-            }
-        })
-    );
-
-    const statusContainer = document.getElementById('microservices-status');
-    statusContainer.innerHTML = statuses
-        .map(
-            (status) =>
-                `<p>${status.name}: <span class="${status.healthy ? 'text-success' : 'text-danger'}">${status.healthy ? 'Operativo' : 'Fuera de servicio'}</span></p>`
-        )
-        .join('');
-}
-
-function showErrorModal(errorMessage) {
-    const modal = document.getElementById('error-modal');
-    const modalBody = document.getElementById('error-modal-body');
-    modalBody.textContent = errorMessage;
-    modal.style.display = 'block';
-}
-
-document.getElementById('close-modal').addEventListener('click', () => {
-    document.getElementById('error-modal').style.display = 'none';
-});
