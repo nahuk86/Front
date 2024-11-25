@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    const token = localStorage.getItem('token'); // Obtiene el token
+    const token = localStorage.getItem('token');
 
     if (!token) {
         alert('No estás autenticado. Redirigiendo al inicio de sesión.');
@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (!response.ok) throw new Error('Token inválido o expirado.');
 
         console.log('Token válido. Inicializando panel.');
-        initializePanel(); // Inicializa el panel si el token es válido
+        initializePanel(); // Llama a la función para cargar el contenido del panel
     } catch (error) {
         console.error('Error de autenticación:', error);
         alert('Tu sesión ha expirado. Por favor, inicia sesión nuevamente.');
@@ -28,11 +28,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
-// Función para inicializar el panel
+// Función para inicializar el contenido del panel
 function initializePanel() {
     const resultArea = document.getElementById('result-area');
 
-    // Configura los botones y funcionalidades del panel
     document.getElementById('view-scanners').addEventListener('click', () => {
         updateResultArea('Mostrando escáneres disponibles...');
     });
@@ -56,13 +55,11 @@ function initializePanel() {
     });
 }
 
-// Función para actualizar el área de resultados
 function updateResultArea(message) {
     const resultArea = document.getElementById('result-area');
     resultArea.innerHTML = `<p>${message}</p>`;
 }
 
-// Función para obtener logs
 async function fetchLogs() {
     const token = localStorage.getItem('token');
     const response = await fetch('https://mdw-back-ops20241124110904.azurewebsites.net/api/Bitacora/todos', {
@@ -78,7 +75,6 @@ async function fetchLogs() {
     return response.json();
 }
 
-// Función para mostrar logs
 function displayLogs(logs) {
     const resultArea = document.getElementById('result-area');
     resultArea.innerHTML = '';

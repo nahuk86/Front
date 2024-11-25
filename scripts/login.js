@@ -13,8 +13,8 @@ document.getElementById('login-form').addEventListener('submit', async (event) =
 
         if (response.ok) {
             const data = await response.json();
-            localStorage.setItem('token', data.token); // Guarda el token
-            localStorage.setItem('userEmail', email); // Guarda el email
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('userEmail', email);
 
             alert('Inicio de sesión exitoso.');
             window.location.href = 'panel.html'; // Redirige al panel
