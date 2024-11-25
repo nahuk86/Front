@@ -43,7 +43,7 @@ function initializePanel() {
         }
     });
 
-    // Acciones de escáneres
+    // Botones de escáneres
     document.getElementById('activate-scanner').addEventListener('click', () => toggleScanner(true));
     document.getElementById('deactivate-scanner').addEventListener('click', () => toggleScanner(false));
 }
@@ -84,7 +84,7 @@ function displayLogs(logs) {
         <tbody>
             ${logs.map(log => `
                 <tr>
-                    <td>${formatDate(log.fechaHora)}</td>
+                    <td>${log.fechaHora ? formatDate(log.fechaHora) : 'Sin fecha'}</td>
                     <td>${log.email || 'Desconocido'}</td>
                     <td>${log.accion || 'Sin acción'}</td>
                     <td>${log.detalle || 'Sin detalle'}</td>
@@ -114,7 +114,7 @@ async function toggleScanner(enable) {
     }
 
     try {
-        const response = await fetch('https://package-acceptance-service.srv604097.hstgr.cloud/api/scanners/status', {
+        const response = await fetch(`https://package-acceptance-service.srv604097.hstgr.cloud/api/scanners/status`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
