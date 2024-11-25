@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    const token = localStorage.getItem('token'); // Verifica el token almacenado
+    const token = localStorage.getItem('token'); // Obtiene el token
 
     if (!token) {
         alert('No estás autenticado. Redirigiendo al inicio de sesión.');
@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     try {
-        // Validar el token en el backend
         const response = await fetch('https://mdw-back-ops20241124110904.azurewebsites.net/api/Account/validate-token', {
             method: 'GET',
             headers: {
@@ -19,9 +18,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         if (!response.ok) throw new Error('Token inválido o expirado');
 
-        // Si el token es válido, mostrar el panel
         document.getElementById('private-content').style.display = 'block';
-        initializePanel();
+        initializePanel(); // Inicializa el panel si el token es válido
     } catch (error) {
         console.error('Error de autenticación:', error);
         alert('Tu sesión ha expirado. Por favor, inicia sesión nuevamente.');
@@ -71,6 +69,7 @@ function displayLogs(logs) {
         return;
     }
 
+    // Reemplazo de propiedades por los nombres correctos que llegan desde la API
     const table = document.createElement('table');
     table.className = 'table table-striped';
     table.innerHTML = `
@@ -85,7 +84,7 @@ function displayLogs(logs) {
         <tbody>
             ${logs.map(log => `
                 <tr>
-                    <td>${log.fechaHora ? formatDate(log.fechaHora) : 'Sin fecha'}</td>
+                    <td>${log.fechaHora ? new Date(log.fechaHora).toLocaleString('es-ES') : 'Sin fecha'}</td>
                     <td>${log.email || 'Desconocido'}</td>
                     <td>${log.accion || 'Sin acción'}</td>
                     <td>${log.detalle || 'Sin detalle'}</td>
@@ -120,9 +119,4 @@ async function toggleScanner(enable) {
         console.error('Error al modificar el estado del escáner:', error);
         alert('No se pudo modificar el estado del escáner. Intenta nuevamente.');
     }
-}
-
-function formatDate(dateString) {
-    const date = new Date(dateString);
-    return date.toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' });
 }
