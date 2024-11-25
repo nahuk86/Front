@@ -96,14 +96,18 @@ function displayLogs(logs) {
 }
 
 async function toggleScanner(enable) {
+    const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+    const apiUrl = 'https://package-acceptance-service.srv604097.hstgr.cloud/api/scanners/status';
+    const fullUrl = `${proxyUrl}${apiUrl}`;
     const scannerId = document.getElementById('scanner-id').value;
+
     if (!scannerId) {
         alert('Por favor, ingresa un ID de escáner válido.');
         return;
     }
 
     try {
-        const response = await fetch('https://package-acceptance-service.srv604097.hstgr.cloud/api/scanners/status', {
+        const response = await fetch(fullUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
