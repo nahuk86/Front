@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 function initializePanel() {
     const resultArea = document.getElementById('result-area');
 
-    // Botón de generar reporte
+    // Generar Reporte
     document.getElementById('generate-report').addEventListener('click', async () => {
         try {
             resultArea.innerHTML = `<p>Cargando registros de la bitácora...</p>`;
@@ -43,12 +43,11 @@ function initializePanel() {
         }
     });
 
-    // Botones para escáneres
-    document.getElementById('activate-scanner').addEventListener('click', () => toggleScanner(1, true));
-    document.getElementById('deactivate-scanner').addEventListener('click', () => toggleScanner(1, false));
+    // Escáneres
+    document.getElementById('activate-scanner').addEventListener('click', () => toggleScanner(true));
+    document.getElementById('deactivate-scanner').addEventListener('click', () => toggleScanner(false));
 }
 
-// Función para obtener los logs
 async function fetchLogs() {
     const token = localStorage.getItem('token');
     const response = await fetch('https://mdw-back-ops20241124110904.azurewebsites.net/api/Bitacora/todos', {
@@ -63,7 +62,6 @@ async function fetchLogs() {
     return response.json();
 }
 
-// Función para mostrar los logs
 function displayLogs(logs) {
     const resultArea = document.getElementById('result-area');
     if (logs.length === 0) {
@@ -85,8 +83,8 @@ function displayLogs(logs) {
         <tbody>
             ${logs.map(log => `
                 <tr>
-                    <td>${log.Fecha ? new Date(log.Fecha).toLocaleString() : 'Fecha no registrada'}</td>
-                    <td>${log.Email || 'Usuario desconocido'}</td>
+                    <td>${log.Fecha ? new Date(log.Fecha).toLocaleString() : 'Sin fecha'}</td>
+                    <td>${log.Email || 'Desconocido'}</td>
                     <td>${log.Accion || 'Sin acción'}</td>
                     <td>${log.Detalle || 'Sin detalle'}</td>
                 </tr>
@@ -97,35 +95,27 @@ function displayLogs(logs) {
     resultArea.appendChild(table);
 }
 
-// Función para activar/desactivar escáneres
-async function toggleScanner(scannerId, enable) {
-    try {
-        const message = {
-            id: scannerId,
-            action: enable ? 'activate' : 'deactivate',
-        };
+async function toggleScanner(enable) {
+    const scannerId = document.getElementById('scanner-id').value;
+    if (!scannerId) {
+        alert('Por favor, ingresa un ID de escáner válido.');
+        return;
+    }
 
+    try {
         const response = await fetch('https://package-acceptance-service.srv604097.hstgr.cloud/api/scanners/status', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(message),
+            body: JSON.stringify({ id: scannerId, action: enable ? 'activate' : 'deactivate' }),
         });
 
         if (!response.ok) throw new Error('Error al cambiar el estado del escáner');
 
         alert(`Escáner ${scannerId} ${enable ? 'activado' : 'desactivado'} exitosamente.`);
-        updateScannerStatus(scannerId, enable ? 'Activo' : 'Inactivo');
     } catch (error) {
         console.error('Error al modificar el estado del escáner:', error);
         alert('No se pudo modificar el estado del escáner. Intenta nuevamente.');
     }
-}
-
-// Actualiza el estado visual de los escáneres
-function updateScannerStatus(scannerId, status) {
-    const badge = document.querySelector(`#scanner-status li:nth-child(${scannerId}) .badge`);
-    badge.textContent = status;
-    badge.className = `badge ${status === 'Activo' ? 'bg-success' : 'bg-danger'}`;
 }
