@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="css/private.css">
     <title>Panel de Control Operacional - Gestión de Escáneres</title>
 </head>
-<body style="display: none;" id="private-content">
+<body style="display: none;" id="panel-content">
     <div class="container-fluid mt-4">
         <h1 class="text-center mb-4">Panel de Control Operacional</h1>
 
@@ -69,7 +69,45 @@
         </div>
     </div>
 
-    <script src="scripts/private.js"></script>
+    <!-- Script para validación y carga del panel -->
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('token'); // Obtiene el token desde localStorage
+
+            // Si no hay token, redirige al login
+            if (!token) {
+                alert('No estás autenticado. Redirigiendo al inicio de sesión.');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            try {
+                // Valida el token con el backend
+                const response = await fetch('https://mdw-back-ops20241124110904.azurewebsites.net/api/Account/validate-token', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                // Si el token es inválido, redirige al login
+                if (!response.ok) {
+                    throw new Error('Token inválido o expirado');
+                }
+
+                // Si la validación es exitosa, muestra el contenido del panel
+                console.log('Token válido. Mostrando el panel.');
+                document.getElementById('panel-content').style.display = 'block';
+            } catch (error) {
+                console.error('Error de autenticación:', error);
+                alert('Tu sesión ha expirado. Por favor, inicia sesión nuevamente.');
+                localStorage.removeItem('token'); // Limpia el token si es inválido
+                window.location.href = 'login.html';
+            }
+        });
+    </script>
+
     <script src="scripts/script.js"></script>
 </body>
 </html>

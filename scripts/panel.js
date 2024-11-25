@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    const token = localStorage.getItem('token'); // Obtiene el token almacenado
+    const token = localStorage.getItem('token'); // Obtiene el token desde localStorage
 
+    // Verifica si el token no existe
     if (!token) {
         alert('No estás autenticado. Redirigiendo al inicio de sesión.');
         window.location.href = 'login.html';
@@ -8,7 +9,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     try {
-        // Valida el token con el backend
+        // Valida el token en el backend
         const response = await fetch('https://mdw-back-ops20241124110904.azurewebsites.net/api/Account/validate-token', {
             method: 'GET',
             headers: {
@@ -17,99 +18,29 @@ document.addEventListener('DOMContentLoaded', async () => {
             },
         });
 
-        if (!response.ok) throw new Error('Token inválido o expirado.');
+        // Verifica si el token es inválido o expirado
+        if (!response.ok) {
+            throw new Error('Token inválido o expirado');
+        }
 
-        console.log('Token válido. Inicializando el panel.');
-        initializePanel(); // Inicializa el contenido del panel
+        // Si la validación es exitosa, muestra el panel
+        console.log('Token válido. Mostrando panel.');
+        document.getElementById('panel-content').style.display = 'block';
+        initializePanel(); // Inicializa las funcionalidades del panel
     } catch (error) {
-        console.error('Error de autenticación:', error);
+        console.error('Error durante la autenticación:', error);
         alert('Tu sesión ha expirado. Por favor, inicia sesión nuevamente.');
-        localStorage.removeItem('token');
+        localStorage.removeItem('token'); // Limpia el token si es inválido
         window.location.href = 'login.html';
     }
 });
 
-// Inicialización del panel
+// Función para inicializar las funcionalidades del panel
 function initializePanel() {
     const resultArea = document.getElementById('result-area');
 
-    document.getElementById('view-scanners').addEventListener('click', () => {
-        updateResultArea('Mostrando escáneres disponibles...');
-    });
-
-    document.getElementById('activate-scanner').addEventListener('click', () => {
-        updateResultArea('Escáner activado exitosamente.');
-    });
-
-    document.getElementById('deactivate-scanner').addEventListener('click', () => {
-        updateResultArea('Escáner desactivado exitosamente.');
-    });
-
-    document.getElementById('generate-report').addEventListener('click', async () => {
-        try {
-            const logs = await fetchLogs();
-            displayLogs(logs);
-        } catch (error) {
-            console.error('Error al generar el reporte:', error);
-            alert('Error al generar el reporte.');
-        }
-    });
-}
-
-function updateResultArea(message) {
-    const resultArea = document.getElementById('result-area');
-    resultArea.innerHTML = `<p>${message}</p>`;
-}
-
-async function fetchLogs() {
-    const token = localStorage.getItem('token');
-    const response = await fetch('https://mdw-back-ops20241124110904.azurewebsites.net/api/Bitacora/todos', {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-        },
-    });
-
-    if (!response.ok) throw new Error('Error al obtener logs.');
-    return response.json();
-}
-
-function displayLogs(logs) {
-    const resultArea = document.getElementById('result-area');
-    resultArea.innerHTML = '';
-
-    if (!logs.length) {
-        resultArea.innerHTML = '<p>No hay registros disponibles.</p>';
-        return;
-    }
-
-    const table = document.createElement('table');
-    table.className = 'table table-striped';
-
-    const thead = document.createElement('thead');
-    thead.innerHTML = `
-        <tr>
-            <th>Fecha</th>
-            <th>Usuario</th>
-            <th>Evento</th>
-            <th>Detalle</th>
-        </tr>
-    `;
-    table.appendChild(thead);
-
-    const tbody = document.createElement('tbody');
-    logs.forEach(log => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${new Date(log.Fecha).toLocaleString()}</td>
-            <td>${log.Email || 'Desconocido'}</td>
-            <td>${log.Accion || 'Sin evento'}</td>
-            <td>${log.Detalle || 'Sin detalle'}</td>
-        `;
-        tbody.appendChild(row);
-    });
-    table.appendChild(tbody);
-
-    resultArea.appendChild(table);
+    // Simula la carga de funcionalidades
+    setTimeout(() => {
+        resultArea.innerHTML = `<p>Funcionalidades cargadas exitosamente.</p>`;
+    }, 1000); // Simula una carga de 1 segundo
 }
