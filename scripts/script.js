@@ -21,15 +21,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             throw new Error('Token inválido o expirado');
         }
 
-        console.log('Token válido. Mostrando el panel.');
+        // Si el token es válido, muestra el contenido
         document.getElementById('private-content').style.display = 'block';
-
-        // Inicializar funcionalidades del panel
-        initializePanel();
+        initializePanel(); // Inicializar funcionalidades del panel
     } catch (error) {
         console.error('Error de autenticación:', error);
         alert('Tu sesión ha expirado. Por favor, inicia sesión nuevamente.');
-        localStorage.removeItem('token');
+        localStorage.removeItem('token'); // Limpia el token
         window.location.href = 'login.html';
     }
 });
@@ -75,7 +73,9 @@ async function fetchLogs() {
             return [];
         }
 
-        return response.json(); // Devuelve los datos de los logs
+        const logs = await response.json(); // Devuelve los datos de los logs
+        console.log('Logs obtenidos:', logs); // Para depuración
+        return logs;
     } catch (error) {
         console.error('Error de red al obtener los logs:', error);
         alert('Error de red. Intenta nuevamente.');
