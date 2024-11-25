@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    const token = localStorage.getItem('token'); // Obtiene el token
+    const token = localStorage.getItem('token');
 
     if (!token) {
         alert('No estás autenticado. Redirigiendo al inicio de sesión.');
@@ -19,11 +19,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (!response.ok) throw new Error('Token inválido o expirado');
 
         document.getElementById('private-content').style.display = 'block';
-        initializePanel(); // Inicializa el panel si el token es válido
+        initializePanel();
     } catch (error) {
         console.error('Error de autenticación:', error);
         alert('Tu sesión ha expirado. Por favor, inicia sesión nuevamente.');
-        localStorage.removeItem('token'); // Elimina el token si es inválido
+        localStorage.removeItem('token');
         window.location.href = 'login.html';
     }
 });
@@ -31,25 +31,25 @@ document.addEventListener('DOMContentLoaded', async () => {
 function initializePanel() {
     const resultArea = document.getElementById('result-area');
 
-    // Botón para generar reporte
+    // Generar Reporte
     document.getElementById('generate-report').addEventListener('click', async () => {
         try {
             resultArea.innerHTML = `<p>Cargando registros de la bitácora...</p>`;
-            const logs = await fetchLogs(); // Obtener los logs
-            displayLogs(logs); // Mostrar logs en el frontend
+            const logs = await fetchLogs();
+            displayLogs(logs);
         } catch (error) {
             console.error('Error al generar el reporte:', error);
             resultArea.innerHTML = `<p class="text-danger">Ocurrió un error al intentar generar el reporte.</p>`;
         }
     });
 
-    // Botones para activar y desactivar escáneres
+    // Escáneres
     document.getElementById('activate-scanner').addEventListener('click', () => toggleScanner(true));
     document.getElementById('deactivate-scanner').addEventListener('click', () => toggleScanner(false));
 }
 
 async function fetchLogs() {
-    const token = localStorage.getItem('token'); // Recupera el token
+    const token = localStorage.getItem('token');
     const response = await fetch('https://mdw-back-ops20241124110904.azurewebsites.net/api/Bitacora/todos', {
         method: 'GET',
         headers: {
@@ -59,7 +59,7 @@ async function fetchLogs() {
     });
 
     if (!response.ok) throw new Error('Error al obtener los logs');
-    return response.json(); // Devuelve los datos en formato JSON
+    return response.json();
 }
 
 function displayLogs(logs) {
@@ -69,7 +69,6 @@ function displayLogs(logs) {
         return;
     }
 
-    // Reemplazo de propiedades por los nombres correctos que llegan desde la API
     const table = document.createElement('table');
     table.className = 'table table-striped';
     table.innerHTML = `
@@ -84,7 +83,7 @@ function displayLogs(logs) {
         <tbody>
             ${logs.map(log => `
                 <tr>
-                    <td>${log.fechaHora ? new Date(log.fechaHora).toLocaleString('es-ES') : 'Sin fecha'}</td>
+                    <td>${log.fechaHora ? new Date(log.fechaHora).toLocaleString() : 'Sin fecha'}</td>
                     <td>${log.email || 'Desconocido'}</td>
                     <td>${log.accion || 'Sin acción'}</td>
                     <td>${log.detalle || 'Sin detalle'}</td>
@@ -92,12 +91,12 @@ function displayLogs(logs) {
             `).join('')}
         </tbody>
     `;
-    resultArea.innerHTML = ''; // Limpia el área de resultados
-    resultArea.appendChild(table); // Agrega la tabla al área
+    resultArea.innerHTML = '';
+    resultArea.appendChild(table);
 }
 
 async function toggleScanner(enable) {
-    const scannerId = document.getElementById('scanner-id').value; // ID del escáner ingresado
+    const scannerId = document.getElementById('scanner-id').value;
     if (!scannerId) {
         alert('Por favor, ingresa un ID de escáner válido.');
         return;
