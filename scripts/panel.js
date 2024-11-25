@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', async () => {
     const token = localStorage.getItem('token');
 
+    // Validar si existe un token
     if (!token) {
         alert('No estás autenticado. Redirigiendo al inicio de sesión.');
         window.location.href = 'login.html';
@@ -43,20 +44,18 @@ function initializePanel() {
         }
     });
 
-    // Ver escáneres disponibles
+    // Escáneres
+    document.getElementById('activate-scanner').addEventListener('click', () => toggleScanner(true));
+    document.getElementById('deactivate-scanner').addEventListener('click', () => toggleScanner(false));
     document.getElementById('view-scanners').addEventListener('click', async () => {
         try {
             const scanners = await fetchScanners();
             displayScanners(scanners);
         } catch (error) {
             console.error('Error al obtener los escáneres:', error);
-            alert('No se pudieron obtener los escáneres disponibles.');
+            alert('No se pudieron obtener los escáneres.');
         }
     });
-
-    // Activar y Desactivar Escáner
-    document.getElementById('activate-scanner').addEventListener('click', () => toggleScanner(true));
-    document.getElementById('deactivate-scanner').addEventListener('click', () => toggleScanner(false));
 }
 
 async function fetchLogs() {
@@ -73,6 +72,18 @@ async function fetchLogs() {
     return response.json();
 }
 
+async function fetchScanners() {
+    const response = await fetch('https://package-acceptance-service.srv604097.hstgr.cloud/api/scanners/all', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+
+    if (!response.ok) throw new Error('Error al obtener la lista de escáneres');
+    return response.json();
+}
+
 function displayLogs(logs) {
     const resultArea = document.getElementById('result-area');
     if (logs.length === 0) {
@@ -86,7 +97,7 @@ function displayLogs(logs) {
         <thead>
             <tr>
                 <th>Fecha</th>
-                <th>Email</th>
+                <th>Usuario</th>
                 <th>Acción</th>
                 <th>Detalle</th>
             </tr>
@@ -106,26 +117,10 @@ function displayLogs(logs) {
     resultArea.appendChild(table);
 }
 
-async function fetchScanners() {
-    const response = await fetch('https://package-acceptance-service.srv604097.hstgr.cloud/api/scanners', {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    });
-
-    if (!response.ok) throw new Error('Error al obtener los escáneres');
-    return response.json();
-}
-
 function displayScanners(scanners) {
     const scannerStatus = document.getElementById('scanner-status');
     scannerStatus.innerHTML = scanners.map(scanner => `
-        <li>
-            Escáner ${scanner.id}: <span class="badge ${scanner.active ? 'bg-success' : 'bg-danger'}">
-                ${scanner.active ? 'Activo' : 'Inactivo'}
-            </span>
-        </li>
+        <li>Escáner ${scanner.id}: <span class="badge ${scanner.active ? 'bg-success' : 'bg-danger'}">${scanner.active ? 'Activo' : 'Inactivo'}</span></li>
     `).join('');
 }
 
