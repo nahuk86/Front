@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    const token = localStorage.getItem('token'); // Obtiene el token desde localStorage
+    const token = localStorage.getItem('token');
 
-    // Verifica si el token no existe
     if (!token) {
         alert('No estás autenticado. Redirigiendo al inicio de sesión.');
         window.location.href = 'login.html';
@@ -9,7 +8,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     try {
-        // Valida el token en el backend
         const response = await fetch('https://mdw-back-ops20241124110904.azurewebsites.net/api/Account/validate-token', {
             method: 'GET',
             headers: {
@@ -18,136 +16,139 @@ document.addEventListener('DOMContentLoaded', async () => {
             },
         });
 
-        // Verifica si el token es inválido o expirado
         if (!response.ok) {
             throw new Error('Token inválido o expirado');
         }
 
-        // Si la validación es exitosa, muestra el panel
-        console.log('Token válido. Mostrando panel.');
         document.getElementById('private-content').style.display = 'block';
-        initializePanel(); // Inicializa las funcionalidades del panel
+        initializePanel();
     } catch (error) {
         console.error('Error durante la autenticación:', error);
         alert('Tu sesión ha expirado. Por favor, inicia sesión nuevamente.');
-        localStorage.removeItem('token'); // Limpia el token si es inválido
+        localStorage.removeItem('token');
         window.location.href = 'login.html';
     }
 });
 
-// Función para inicializar las funcionalidades del panel
 function initializePanel() {
     const resultArea = document.getElementById('result-area');
+    const scannerStatus = document.getElementById('scanner-status');
 
-    // Botón: Ver Escáneres Disponibles
+    // Ver escáneres disponibles
     document.getElementById('view-scanners').addEventListener('click', async () => {
         try {
-            updateResultArea('Cargando lista de escáneres...');
+            resultArea.innerHTML = `<p>Cargando escáneres disponibles...</p>`;
             const scanners = await fetchScanners();
-            displayScanners(scanners);
+            scannerStatus.innerHTML = scanners.map(scanner => `
+                <li>
+                    Escáner ${scanner.id}: <span class="badge ${scanner.active ? 'bg-success' : 'bg-danger'}">
+                        ${scanner.active ? 'Activo' : 'Inactivo'}
+                    </span>
+                </li>
+            `).join('');
         } catch (error) {
-            console.error('Error al obtener la lista de escáneres:', error);
-            updateResultArea('Error al cargar la lista de escáneres.');
+            console.error('Error al obtener los escáneres:', error);
+            resultArea.innerHTML = `<p>Error al cargar los escáneres.</p>`;
         }
     });
 
-    // Botón: Activar Escáner
+    // Activar escáner
     document.getElementById('activate-scanner').addEventListener('click', async () => {
-        try {
-            const scannerId = prompt('Ingrese el ID del escáner que desea activar:');
-            if (scannerId) {
-                await updateScannerStatus(scannerId, true);
-                updateResultArea(`Escáner ${scannerId} activado exitosamente.`);
-            }
-        } catch (error) {
-            console.error('Error al activar el escáner:', error);
-            updateResultArea('Error al activar el escáner.');
-        }
-    });
-
-    // Botón: Desactivar Escáner
-    document.getElementById('deactivate-scanner').addEventListener('click', async () => {
-        try {
-            const scannerId = prompt('Ingrese el ID del escáner que desea desactivar:');
-            if (scannerId) {
-                await updateScannerStatus(scannerId, false);
-                updateResultArea(`Escáner ${scannerId} desactivado exitosamente.`);
-            }
-        } catch (error) {
-            console.error('Error al desactivar el escáner:', error);
-            updateResultArea('Error al desactivar el escáner.');
-        }
-    });
-
-    // Actualiza el área de resultados
-    function updateResultArea(message) {
-        resultArea.innerHTML = `<p>${message}</p>`;
-    }
-
-    // Función para obtener los escáneres disponibles
-    async function fetchScanners() {
-        const response = await fetch('https://mdw-back-ops20241124110904.azurewebsites.net/api/Scanners', {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                'Content-Type': 'application/json',
-            },
-        });
-
-        if (!response.ok) {
-            throw new Error('No se pudieron obtener los escáneres.');
-        }
-
-        return response.json();
-    }
-
-    // Función para mostrar los escáneres
-    function displayScanners(scanners) {
-        if (!scanners || scanners.length === 0) {
-            updateResultArea('No hay escáneres disponibles.');
+        const scannerId = document.getElementById('scanner-id').value;
+        if (!scannerId) {
+            alert('Por favor, ingresa un ID de escáner.');
             return;
         }
+        await toggleScanner(scannerId, true);
+    });
 
-        const table = document.createElement('table');
-        table.className = 'table table-striped';
-
-        const thead = document.createElement('thead');
-        thead.innerHTML = `
-            <tr>
-                <th>ID</th>
-                <th>Estado</th>
-            </tr>
-        `;
-        table.appendChild(thead);
-
-        const tbody = document.createElement('tbody');
-        scanners.forEach((scanner) => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${scanner.id}</td>
-                <td>${scanner.active ? 'Activo' : 'Inactivo'}</td>
-            `;
-            tbody.appendChild(row);
-        });
-        table.appendChild(tbody);
-
-        resultArea.innerHTML = '';
-        resultArea.appendChild(table);
-    }
-
-    // Función para actualizar el estado de un escáner
-    async function updateScannerStatus(scannerId, isActive) {
-        const response = await fetch(`https://mdw-back-ops20241124110904.azurewebsites.net/api/Scanners/${scannerId}/status`, {
-            method: 'PUT',
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ active: isActive }),
-        });
-
-        if (!response.ok) {
-            throw new Error('No se pudo actualizar el estado del escáner.');
+    // Desactivar escáner
+    document.getElementById('deactivate-scanner').addEventListener('click', async () => {
+        const scannerId = document.getElementById('scanner-id').value;
+        if (!scannerId) {
+            alert('Por favor, ingresa un ID de escáner.');
+            return;
         }
+        await toggleScanner(scannerId, false);
+    });
+
+    // Generar reporte de logs
+    document.getElementById('generate-report').addEventListener('click', async () => {
+        try {
+            resultArea.innerHTML = `<p>Cargando registros de la bitácora...</p>`;
+            const logs = await fetchLogs();
+            displayLogs(logs);
+        } catch (error) {
+            console.error('Error al generar el reporte:', error);
+            resultArea.innerHTML = `<p>Error al cargar los registros.</p>`;
+        }
+    });
+}
+
+// Funciones auxiliares
+async function fetchScanners() {
+    const token = localStorage.getItem('token');
+    const response = await fetch('/api/Scanners', {
+        headers: { 'Authorization': `Bearer ${token}` },
+    });
+    if (!response.ok) throw new Error('Error al obtener escáneres');
+    return response.json();
+}
+
+async function toggleScanner(scannerId, enable) {
+    const token = localStorage.getItem('token');
+    const response = await fetch(`/api/Scanners/${scannerId}/status`, {
+        method: 'PUT',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ enabled: enable }),
+    });
+
+    if (response.ok) {
+        alert(`Escáner ${scannerId} ${enable ? 'activado' : 'desactivado'} exitosamente.`);
+        document.getElementById('view-scanners').click();
+    } else {
+        alert(`Error al ${enable ? 'activar' : 'desactivar'} el escáner.`);
     }
+}
+
+async function fetchLogs() {
+    const token = localStorage.getItem('token');
+    const response = await fetch('/api/Logs', {
+        headers: { 'Authorization': `Bearer ${token}` },
+    });
+    if (!response.ok) throw new Error('Error al obtener logs');
+    return response.json();
+}
+
+function displayLogs(logs) {
+    const resultArea = document.getElementById('result-area');
+    if (logs.length === 0) {
+        resultArea.innerHTML = '<p>No hay registros en la bitácora.</p>';
+        return;
+    }
+    const table = `
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Usuario</th>
+                    <th>Acción</th>
+                    <th>Detalle</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${logs.map(log => `
+                    <tr>
+                        <td>${new Date(log.fecha).toLocaleString()}</td>
+                        <td>${log.usuario || 'Desconocido'}</td>
+                        <td>${log.accion || 'N/A'}</td>
+                        <td>${log.detalle || 'N/A'}</td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>`;
+    resultArea.innerHTML = table;
 }
