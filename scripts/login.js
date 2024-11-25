@@ -14,7 +14,7 @@ document.getElementById('login-form').addEventListener('submit', async (event) =
 
         if (response.ok) {
             const data = await response.json();
-            localStorage.setItem('token', data.Token); // Almacena el token en localStorage
+            localStorage.setItem('token', data.Token); // Guarda el token
             alert('Inicio de sesión exitoso.');
             window.location.href = 'panel.html'; // Redirige al Panel de Control
         } else {
