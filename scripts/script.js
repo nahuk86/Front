@@ -108,10 +108,10 @@ function displayLogs(logs) {
     const tbody = document.createElement('tbody');
     logs.forEach((log) => {
         // Ajusta los campos basándote en la estructura esperada de la API
-        const fecha = log.Fecha || log.timestamp || 'Sin fecha';
-        const email = log.Email || log.user || 'Desconocido';
-        const accion = log.Accion || log.action || 'Sin acción';
-        const detalle = log.Detalle || log.description || 'Sin detalle';
+        const fecha = log.Fecha || log.timestamp || log.fecha || 'Sin fecha';
+        const email = log.Email || log.user || log.usuario || 'Desconocido';
+        const accion = log.Accion || log.action || log.evento || 'Sin acción';
+        const detalle = log.Detalle || log.description || log.detalle || 'Sin detalle';
 
         const row = document.createElement('tr');
         row.innerHTML = `
